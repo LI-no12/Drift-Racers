@@ -1,0 +1,13 @@
+<!DOCTYPE html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Coburg-Daten exportieren</title>
+<style>body{font-family:system-ui,sans-serif;background:#0b1020;color:#fff;max-width:640px;margin:40px auto;padding:0 16px;line-height:1.6}button{font:inherit;padding:10px 18px;border:0;border-radius:8px;background:#f59e0b;color:#111;font-weight:700;cursor:pointer}a{color:#fde047}</style></head><body>
+<h2>Coburg-Daten für das Spiel erzeugen</h2>
+<p>Dieses Werkzeug holt die Straßen, Gebäude und Gewässer von Coburg einmal von OpenStreetMap und speichert sie als Datei <b>coburg.json</b>. Wenn du diese Datei in den Ordner <b>data</b> deines Repositorys hochlädst, startet das Spiel für alle sofort, ohne Wartezeit und ohne den OpenStreetMap-Server zu belasten.</p>
+<p><button id="go">Daten holen (dauert etwa eine halbe Minute)</button></p><p id="st"></p><p id="dl"></p>
+<p><small>Kartendaten © OpenStreetMap-Mitwirkende (ODbL).</small></p>
+<script src="../js/osm-loader.js"></script>
+<script>
+document.getElementById("go").onclick=async()=>{const st=document.getElementById("st");st.textContent="Lade …";
+try{const O=await fetchCoburgOsm(t=>st.textContent=t);if(!O){st.textContent="Keine Daten erhalten. Bitte später noch einmal versuchen.";return}
+const blob=new Blob([JSON.stringify(O)],{type:"application/json"}),a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="coburg.json";a.textContent="coburg.json herunterladen ("+(blob.size/1048576).toFixed(1)+" MB)";document.getElementById("dl").innerHTML="";document.getElementById("dl").appendChild(a);
+st.textContent="Fertig: "+O.roads.length+" Straßen, "+O.blds.length+" Gebäude. Lade die Datei herunter und lege sie im Repository unter data/coburg.json ab."}catch(e){st.textContent="Fehler: "+e.message}};
+</script></body></html>
